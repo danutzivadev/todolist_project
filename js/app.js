@@ -6,6 +6,16 @@ var addButton = document.getElementsByTagName("button")[0]; // first button
 var incompleteTasksHolder = document.getElementById("incomplete-tasks"); //incomplete-tasks
 var completeTasksHolder = document.getElementById("completed-tasks"); //complete-tasks
 
+taskInput.addEventListener("keyup", function(event) {
+    // Number 13 is the "Enter" key on the keyboard
+    if (event.keyCode === 13) {
+        // Cancel the default action, if needed
+        event.preventDefault();
+        // Trigger the button element with a click
+        addButton.click();
+    }
+});
+
 //New Task List Item
 var createNewTaskElement = function (taskString) {
     // Create List Item
@@ -28,7 +38,7 @@ var createNewTaskElement = function (taskString) {
     editInput.type = "text";
 
     editButton.innerText = "Edit";
-    editButton.className = "edit"
+    editButton.classList.add("edit","eB");
     deleteButton.innerText = "Delete";
     deleteButton.className = "delete";
 
@@ -48,30 +58,42 @@ var addTask = function () {
     console.log("Add task ...")
     //Create a new list item with the text from #new-task:
     var listItem = createNewTaskElement(taskInput.value);
+    if (taskInput.value == ""){
+        alert("NULL");
+    } else {
+
     //Append list item to incompleteTasksHolder
     incompleteTasksHolder.appendChild(listItem);
     bindTaskEvents(listItem,taskCompleted);
-}
+
+    taskInput.value = "";
+}}
 
 //Edit an existing task
 var editTask = function () {
     console.log("Edit Task ...")
 
     var listItem = this.parentNode;
-    var editInput = listItem.querySelector("input[type = text");
+    var editInput = listItem.querySelector("input[type=text]");
     var label = listItem.querySelector("label");
-
     var containsClass = listItem.classList.contains("editMode");
+    var eB = listItem.querySelector('.eB');
     //if the class of parent is .editMode
-    if (containsClass == "editMode") {
-        // switch from .editMode
-        //label text become the input's value
+    if (containsClass === "editMode") {
+
         label.innerText = editInput.value;
     } else {
-        //switch to .editMode
+
         //input value becomes the label's text
         editInput.value = label.innerText;
 }
+    if(eB.innerHTML === "Save"){
+        eB.innerHTML = "Edit";
+    }else {
+        eB.innerHTML = "Save";
+
+    }
+
 
 
     //Toggle .editMode on the list item
@@ -124,9 +146,14 @@ var bindTaskEvents =function(taskListItem, checkBoxEventHandler) {
     checkbox.onchange= checkBoxEventHandler;
 }
 
+var ajaxRequest = function () {
+    console.log("Ajax Request");
+}
 //Set the click handler to the addTask function
-addButton.onclick = addTask;
+addButton.addEventListener("click", addTask);
+addButton.addEventListener("click", ajaxRequest);
 
+// addButton.onclick = ajaxRequest;
 // cycle over incompleteTasksHolder ul list items
 for (var i= 0; i < incompleteTasksHolder.children.length; i++) {
     //bind events to list item's children (taskCompleted)
